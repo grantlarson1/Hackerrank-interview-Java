@@ -5,8 +5,9 @@ public class MinimumSwaps2
 	{
 	    //public String name;
 	    public int value;
-	    Node end;
-	    Node()
+	    Node end;								//Each node points to at most one other node
+	    Node()									//Node n points at node m if Node m occupies the index
+	    										//of the unsorted array that n should occupy in the sorted array
 	    {
 	    	
 	    }
@@ -29,26 +30,27 @@ public class MinimumSwaps2
 		
 		List<Integer> arr1 = new ArrayList<>();
 		for (int i : arr)
-			arr1.add(i);
+			arr1.add(i);									//Java autoboxing sucks so I have to construct an Integer Arraylist
 		
+		Collections.sort(arr1);								//Sort array list
+		HashMap<Integer, Integer> map = new HashMap<>();
+
 		for (int i = 0; i < arr.length; i++)
 		{
-			Node n = new Node(arr[i]);
-			nodes.add(n);	
-		}
-		Collections.sort(arr1);
+			Node n = new Node(arr[i]);						
+			nodes.add(n);									//Add node to my list of nodes
+			map.put(arr1.get(i),i);							//Create a mapping from a value in the array, 
+		}													//to its index in the sorted array
 		
-		long start = System.nanoTime();
 		for (Node n : nodes)
-			n.end = nodes.get(arr1.indexOf(n.value));
-		System.out.println((System.nanoTime()-start)/(float)1000000000);
+			n.end = nodes.get(map.get(n.value));			//Create the node that each node should point to
 		
 		int total = 0;
 		int count = 0;
 		Set<Node> visited = new HashSet<>();
 		
-		for (Node i : nodes)
-		{
+		for (Node i : nodes)								//This counts the length of each cycle, subtracts 1 from it
+		{													//and adds this number to total 
 			count = 0;
 			if (visited.contains(i)) continue;
 			Node iter = i;
@@ -68,7 +70,7 @@ public class MinimumSwaps2
 			if (visited.size() == nodes.size()) break;
 		}
 
-		return total;
+		return total;										//Minimum number of swaps
     }
 	
 	public static void main(String args[])
